@@ -83,37 +83,25 @@ def depthFirstSearch(problem):
     print "Start's successors:", problem.getSuccessors(problem.getStartState())
     """
     "*** YOUR CODE HERE ***"
-    from game import Directions
-    legend = {
-        "North" : Directions.NORTH,
-        "South" : Directions.SOUTH,
-        "East" : Directions.EAST,
-        "West" : Directions.WEST,
-        "right" : Directions.RIGHT,
-        "left" : Directions.LEFT,
-        "up" : Directions.NORTH,
-        "down" : Directions.SOUTH,
-        "Stop" : Directions.STOP,
-        "Reverse" : Directions.REVERSE
-    }
 
     start = problem.getStartState()
     fringe = util.PriorityQueue()
-    for n in problem.getSuccessors(start):
-        fringe.push((n, [legend[n[1]]], [start,n[0]]),-n[2])
+    history = [start]
+    fringe.push(((start,[]),[]),0)
 
     while not fringe.isEmpty():
-        parent, path, history = fringe.pop()
+        parent, path = fringe.pop()
 
         if problem.isGoalState(parent[0]):    
-            return path + [legend[parent[1]]]
+            return path + [parent[1]]
 
         for n in problem.getSuccessors(parent[0]):
 
             if n[0] not in history:
                 if problem.isGoalState(n[0]):
-                    return path + [legend[n[1]]]
-                fringe.push((n, path + [legend[n[1]]], history + [n[0]]), -n[2])
+                    return path + [n[1]]
+                history.append(n[0])
+                fringe.push((n, path + [n[1]]), -n[2])
 
     return path
 
@@ -123,37 +111,24 @@ def breadthFirstSearch(problem):
     [2nd Edition: p 73, 3rd Edition: p 82]
     """
     "*** YOUR CODE HERE ***"
-    from game import Directions
-    legend = {
-        "North" : Directions.NORTH,
-        "South" : Directions.SOUTH,
-        "East" : Directions.EAST,
-        "West" : Directions.WEST,
-        "right" : Directions.RIGHT,
-        "left" : Directions.LEFT,
-        "up" : Directions.NORTH,
-        "down" : Directions.SOUTH,
-        "Stop" : Directions.STOP,
-        "Reverse" : Directions.REVERSE
-    }
-
     start = problem.getStartState()
     fringe = util.Queue()
-    for n in problem.getSuccessors(start):
-        fringe.push((n, [legend[n[1]]], [start,n[0]]))
+    history = [start]
+    fringe.push(((start,[]),[]))
 
     while not fringe.isEmpty():
-        parent, path, history = fringe.pop()
+        parent, path = fringe.pop()
 
         if problem.isGoalState(parent[0]):    
-            return path + [legend[parent[1]]]
+            return path + [parent[1]]
 
         for n in problem.getSuccessors(parent[0]):
 
             if n[0] not in history:
                 if problem.isGoalState(n[0]):
-                    return path + [legend[n[1]]]
-                fringe.push((n, path + [legend[n[1]]], history + [n[0]]))
+                    return path + [n[1]]
+                history.append(n[0])
+                fringe.push((n, path + [n[1]]))
 
     return path
     
@@ -161,37 +136,24 @@ def breadthFirstSearch(problem):
 def uniformCostSearch(problem):
     "Search the node of least total cost first. "
     "*** YOUR CODE HERE ***"
-    from game import Directions
-    legend = {
-        "North" : Directions.NORTH,
-        "South" : Directions.SOUTH,
-        "East" : Directions.EAST,
-        "West" : Directions.WEST,
-        "right" : Directions.RIGHT,
-        "left" : Directions.LEFT,
-        "up" : Directions.NORTH,
-        "down" : Directions.SOUTH,
-        "Stop" : Directions.STOP,
-        "Reverse" : Directions.REVERSE
-    }
-
     start = problem.getStartState()
     fringe = util.PriorityQueue()
-    for n in problem.getSuccessors(start):
-        fringe.push((n, [legend[n[1]]], [start,n[0]]), problem.getCostOfActions([legend[n[1]]]))
+    history = [start]
+    fringe.push(((start,[]),[]),0)
         
     while not fringe.isEmpty():
-        parent, path, history = fringe.pop()
+        parent, path = fringe.pop()
 
         if problem.isGoalState(parent[0]):    
-            return path + [legend[parent[1]]]
+            return path + [parent[1]]
 
         for n in problem.getSuccessors(parent[0]):
 
             if n[0] not in history:
                 if problem.isGoalState(n[0]):
-                    return path + [legend[n[1]]]
-                fringe.push((n, path + [legend[n[1]]], history + [n[0]]), problem.getCostOfActions(path + [legend[n[1]]]))
+                    return path + [n[1]]
+                history.append(n[0])
+                fringe.push((n, path + [n[1]]), problem.getCostOfActions(path + [n[1]]))
 
     return path
 
@@ -205,39 +167,31 @@ def nullHeuristic(state, problem=None):
 def aStarSearch(problem, heuristic=nullHeuristic):
     "Search the node that has the lowest combined cost and heuristic first."
     "*** YOUR CODE HERE ***"
-    from game import Directions
-    legend = {
-        "North" : Directions.NORTH,
-        "South" : Directions.SOUTH,
-        "East" : Directions.EAST,
-        "West" : Directions.WEST,
-        "right" : Directions.RIGHT,
-        "left" : Directions.LEFT,
-        "up" : Directions.NORTH,
-        "down" : Directions.SOUTH,
-        "Stop" : Directions.STOP,
-        "Reverse" : Directions.REVERSE
-    }
 
     start = problem.getStartState()
     fringe = util.PriorityQueue()
-    for n in problem.getSuccessors(start):
-        fringe.push((n, [legend[n[1]]], [start,n[0]]), problem.getCostOfActions([legend[n[1]]]) + heuristic(n[0],problem))
+    history = [start]
+    fringe.push(((start,[]),[]),0)
         
     while not fringe.isEmpty():
-        parent, path, history = fringe.pop()
+        parent, path = fringe.pop()
 
         if problem.isGoalState(parent[0]):    
-            return path + [legend[parent[1]]]
+            return path + [parent[1]]
 
         for n in problem.getSuccessors(parent[0]):
 
             if n[0] not in history:
                 if problem.isGoalState(n[0]):
-                    return path + [legend[n[1]]]
-                fringe.push((n, path + [legend[n[1]]], history + [n[0]]), problem.getCostOfActions(path + [legend[n[1]]]) + heuristic(n[0],problem))
+                    return path + [n[1]]
+                history.append(n[0])
+                fringe.push((n, path + [n[1]]), problem.getCostOfActions(path + [n[1]]) + problem.getCostOfActions(path + [n[1]]) + heuristic(n[0],problem))
 
     return path
+
+
+
+
 
 
 # Abbreviations
